@@ -36,7 +36,7 @@ router.post("/signup", async (req, res, next) => {
       password: hashed,
       role: isVendor ? "vendor" : "regular",
     });
-
+    //create token
     const payload = {
       sub: user._id,
     };
@@ -46,6 +46,44 @@ router.post("/signup", async (req, res, next) => {
     });
 
     res.status(201).json({
+      token,
+      user: { id: user._id, email: user.email, role: user.role },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/signin", async (req, res, next) => {
+  try {
+    const { email, password, isVendor } = req.body;
+
+    //check whether the user is alreay signed up
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Wrong email or password!" });
+    }
+
+    //compare password
+    const isMatched = await bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
+      return res.status(401).json({ message: "Wrong email or password!" });
+    }
+    //validate role
+    const checkedRole = isVendor ? "vendor" : "regular";
+    if (checkedRole !== user.role) {
+      return res.status(403).json({ message: "Wrong role" });
+    }
+    const payload = {
+      sub: user._id,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    res.status(200).json({
       token,
       user: { id: user._id, email: user.email, role: user.role },
     });
