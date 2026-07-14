@@ -6,6 +6,7 @@ const PORT = 5001;
 
 connectDB();
 
+app.use(express.json());
 app.get("/api/health", (req, res) => {
   res.json({ ok: true });
 });
