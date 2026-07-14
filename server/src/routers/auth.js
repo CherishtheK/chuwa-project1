@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const User = require("../models/User");
+const { requireJwt } = require("../middlewares/auth");
 // const CustomAPIError = require("../errors");
 const router = express.Router();
 
@@ -92,4 +93,23 @@ router.post("/signin", async (req, res, next) => {
   }
 });
 
+router.get("/me", requireJwt, (req, res) => {
+  res.json({
+    user: { id: req.user._id, email: req.user.email, role: req.user.role },
+  });
+});
+
+router.post("/signout", (req, res) => {
+  res.json({ message: "Signed out!" });
+});
+
+router.post("/forgot-password", (req, res) => {
+  const { email } = req.body;
+  if (!email || !validator.isEmail(email)) {
+    return res.status(400).json({ message: "Invalid email!" });
+  }
+  return res.json({
+    message: "We have sent an email with the link to update your password!",
+  });
+});
 module.exports = router;
