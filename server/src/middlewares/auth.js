@@ -20,12 +20,13 @@ async function requireJwt(req, res, next) {
 
     next();
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    console.error(err);
+    res.status(401).json({ message: "Invalid token!" });
   }
 }
 function requireVendorRole(req, res, next) {
   if (req.user?.role !== "vendor")
-    return res.status(403).json({ error: "forbidden" });
+    return res.status(403).json({ message: "forbidden" });
   next();
 }
 
