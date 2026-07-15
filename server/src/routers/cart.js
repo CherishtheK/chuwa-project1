@@ -35,8 +35,23 @@ router.post('/items', requireJwt, async(req, res) => {
 })
 
 //delete product from cart
-router.delete('/', requireJwt, async(req, res) => {
-    res.status(200).json({ message: "TODO: delete item" });
+router.delete('/items/:id', requireJwt, async(req, res) => {
+    try{
+        const productId = req.params.id;
+        const curCart = await Cart.findOne({userId: req.user.id});
+        const index = curCart.items.findIndex(item => item.productId.toString() === productId);
+        if(index === -1){
+            res.status(404).json({message: "Product not found in cart"});
+        }
+        else{
+            curCart.items.splice(index, 1);
+            await curCart.save();
+            res.status(200).json({message: "Product deleted successfully"});
+        }
+    }
+    catch(err){
+        res.status(500).json({message: err.message});
+    }
 })
 
 //get summary
