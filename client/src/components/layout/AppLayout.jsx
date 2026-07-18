@@ -1,16 +1,19 @@
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "./Navbar";
+import Footer from "./MyFooter";
 import { Outlet } from "react-router-dom";
+import { Layout } from "antd";
+
+const { Content } = Layout;
 
 function AppLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <Layout style={{ minHeight: "100vh" }}>
       <Header />
-      <main className="flex-1">
+      <Content style={{ flex: 1 }}>
         <Outlet />
-      </main>
+      </Content>
       <Footer />
-    </div>
+    </Layout>
   );
 }
 
