@@ -51,6 +51,7 @@ function ProductDetailsPage() {
             <div className="flex gap-3 mt-4">
             {quantity === 0?(<Button 
                     type="primary" 
+                    style={{backgroundColor: "#5048e5", color: "white"}}
                     disabled={product.stock === 0}
                     onClick={() => handleAdd(1)}>
                     Add to Cart
