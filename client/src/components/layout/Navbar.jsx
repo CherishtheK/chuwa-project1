@@ -16,8 +16,8 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const total = useSelector(state => state.cart.total);
-  const totalQuantity = useSelector(state => state.cart.totalQuantity);
+  const total = useSelector((state) => state.cart.total);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -90,13 +90,10 @@ function Navbar() {
           </span>
         )}
         <Badge count={totalQuantity}>
-          <ShoppingCartOutlined className="!text-white text-2xl"/>
+          <ShoppingCartOutlined className="!text-white text-2xl" />
         </Badge>
 
-        <span style={{ color: "white" }}>
-             ${total}
-        </span>
-
+        <span style={{ color: "white" }}>${total}</span>
       </div>
     </Header>
   );

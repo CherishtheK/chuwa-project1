@@ -40,8 +40,8 @@ function ForgotPasswordPage() {
   }
 
   return (
-    <Card style={{ width: 400, margin: "40px auto" }}>
-      <h2 style={{ textAlign: "center" }}>Update your password</h2>
+    <Card style={{ width: 500, margin: "40px auto" }}>
+      <h1 style={{ textAlign: "center" }}>Update your password</h1>
       <p style={{ textAlign: "center" }}>
         Enter your email, we will send you the recovery link
       </p>

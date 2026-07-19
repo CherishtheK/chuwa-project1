@@ -46,8 +46,8 @@ function SignupPage() {
   ];
 
   return (
-    <Card style={{ width: 400, margin: "40px auto" }}>
-      <h2 style={{ textAlign: "center" }}>Sign up an account</h2>
+    <Card style={{ width: 500, margin: "40px auto" }}>
+      <h1 style={{ textAlign: "center" }}>Sign up an account</h1>
       <AuthForm
         fields={fields}
         onFinish={onFinish}

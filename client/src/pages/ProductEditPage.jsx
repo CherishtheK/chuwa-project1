@@ -47,7 +47,7 @@ function ProductEditPage() {
 
   return (
     <Card style={{ maxWidth: 600, margin: "40px auto" }}>
-      <h2>{isEdit ? "Edit Product" : "Create Product"}</h2>
+      <h1>{isEdit ? "Edit Product" : "Create Product"}</h1>
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="name"
