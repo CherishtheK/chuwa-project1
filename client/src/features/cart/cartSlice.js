@@ -43,6 +43,17 @@ const cartSlice = createSlice({
       .addCase(fetchCart.pending, (state) => {
         state.loading = true;
       })
+      .addCase(fetchCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload.items;
+        state.totalQuantity = action.payload.totalQuantity;
+        state.subtotal = action.payload.subtotal;
+        state.tax = action.payload.tax;
+        state.total = action.payload.total
+      })
+      .addCase(fetchCart.rejected, (state) => {
+        state.loading = false;
+      })
   }
 });
 
