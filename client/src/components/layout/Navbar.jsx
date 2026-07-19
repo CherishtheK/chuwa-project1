@@ -7,7 +7,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/auth/authSlice";
-import { fetchCart } from "../../features/cart/cartSlice";
+import { fetchCart, resetCart } from "../../features/cart/cartSlice";
 import { useEffect } from "react";
 
 const { Header } = Layout;
@@ -75,6 +75,7 @@ function Navbar() {
             onClick={() => {
               localStorage.removeItem("token");
               dispatch(logoutUser());
+              dispatch(resetCart());
               navigate("/");
             }}
           >
@@ -89,7 +90,7 @@ function Navbar() {
           </span>
         )}
         <Badge count={totalQuantity}>
-          <ShoppingCartOutlined className="text-white text-2xl"/>
+          <ShoppingCartOutlined className="!text-white text-2xl"/>
         </Badge>
 
         <span style={{ color: "white" }}>

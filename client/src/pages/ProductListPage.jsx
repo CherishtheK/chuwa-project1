@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useSelector} from "react-redux";
+import { useSelector, useDispatch} from "react-redux";
 import { getProducts } from '../api/products';
 import { Select, Button } from 'antd';
 import ProductCard from '../components/ProductCard';
+import { fetchCart } from "../features/cart/cartSlice";
 
 const sortOptions = [
   {value: 'createdAt_desc', label: "Last added"},
@@ -18,6 +19,7 @@ function ProductListPage() {
   const [totalPages, setTotalPages] = useState(1);
   const user = useSelector((state) => state.auth.user);
   const isVendor = user?.role === 'vendor';  
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getProducts({ page, sortBy, sortOrder})
@@ -28,6 +30,9 @@ function ProductListPage() {
       .catch(err => console.log(err))
   }, [page, sortBy, sortOrder])
 
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [])
   const handleSortChange = (value) => {
     const [newSortBy, newSortOrder] = value.split('_');
     setSortBy(newSortBy);
