@@ -1,15 +1,21 @@
 import { Card, Button } from 'antd';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCart, addOrUpdateCart, removeCart } from '../features/cart/cartSlice';
 
 
 function ProductCard({product, isVendor}){
+    const curItems = useSelector(state => state.cart.items);
+    const curProduct = curItems.find(item => item.productId.toString() === product._id.toString())
+    const quantity = curProduct?.quantity || 0;
+    const dispatch = useDispatch()
+
+    const handleAdd = async (delta) => {
+        await dispatch(addOrUpdateCart({productId: product._id, delta}));
+        dispatch(fetchCart());
+    }
+
     return (
-        // <div>
-        //     <img src="product.imageUrl" alt="product.name" />
-        //     <h3>{product.name}</h3>
-        //     <h3>${product.price}</h3>
-        //     <button>Add</button>
-        //     {isVendor && <button>Edit</button>}
-        // </div>
         <Card
             cover={<img src={product.imageUrl} alt={product.name} className='h-48 object-cover'/>}
             className='w-full'>
@@ -21,7 +27,18 @@ function ProductCard({product, isVendor}){
                 )
             }
             <div className='flex gap-2 mt-3'>
-                <Button type='primary' disabled={product.stock === 0}>Add</Button>
+                {quantity === 0? (<Button 
+                    type='primary' 
+                    disabled={product.stock === 0}
+                    onClick={() => handleAdd(1)}>
+                        Add
+                </Button>) : (
+                    <div className='flex items-center gap-2'>
+                        <Button onClick={() => handleAdd(-1)}> - </Button>
+                        <span className='w-6 text-center'>{quantity}</span>
+                        <Button onClick={() => handleAdd(1)}> + </Button>
+                    </div>
+                )}
                 {isVendor && <Button>Edit</Button>}
             </div>
         </Card>

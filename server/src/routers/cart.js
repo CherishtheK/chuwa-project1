@@ -12,7 +12,7 @@ router.post('/items', requireJwt, async(req, res) => {
         const curCart = await Cart.findOneAndUpdate(
             { userId: req.user.id},
             {},
-            { upsert: true, new: true}
+            { upsert: true, returnDocument: 'after'}
         );
         
         //update quantity
@@ -71,6 +71,8 @@ router.get('/', requireJwt, async(req, res) => {
         const detailedItems = await Promise.all(
             curCart.items.map(async(item) => {
                 const curProduct = await Product.findById(item.productId);
+                if(!curProduct) return null;
+                
                 return{
                     productId: item.productId,
                     name: curProduct.name,
@@ -81,17 +83,18 @@ router.get('/', requireJwt, async(req, res) => {
                 }
             })
         )
-        const subtotal = detailedItems.reduce((acc, cur) => {
+        const validItems = detailedItems.filter(item => item !== null);
+        const subtotal = validItems.reduce((acc, cur) => {
             return acc + cur.subtotal;
         }, 0)
-        const totalQuantity = detailedItems.reduce((acc, cur) => {
+        const totalQuantity = validItems.reduce((acc, cur) => {
             return acc + cur.quantity;
         }, 0)
         const tax = subtotal * TAX_RATE;
         const total = subtotal + tax;
 
         res.status(200).json({
-            items: detailedItems,
+            items: validItems,
             totalQuantity,
             subtotal,
             tax,
