@@ -43,17 +43,26 @@ function SigninPage() {
   ];
 
   return (
-    <Card style={{ width: 500, margin: "40px auto" }}>
-      <h1 style={{ textAlign: "center" }}>Sign in to your account</h1>
-      <AuthForm
-        fields={fields}
-        onFinish={onFinish}
-        submitButtonText="Sign in"
-      />
-      <p style={{ textAlign: "center" }}>
-        Don't have an account? <Link to="/signup">Sign up</Link>
-      </p>
-    </Card>
+    <div className="flex-1 flex justify-center items-center">
+      <Card style={{ width: "100%", maxWidth: "500px", padding: "20px" }}>
+        <h1 style={{ textAlign: "center", marginBottom: "40px" }}>
+          Sign in to your account
+        </h1>
+        <AuthForm
+          fields={fields}
+          onFinish={onFinish}
+          submitButtonText="Sign in"
+        />
+        <div className="flex justify-between">
+          <p style={{ textAlign: "center" }}>
+            Don't have an account? <Link to="/signup">Sign up</Link>
+          </p>
+          <p style={{ textAlign: "center" }}>
+            <Link to="/forgot-password">Forgot password?</Link>
+          </p>
+        </div>
+      </Card>
+    </div>
   );
 }
 
