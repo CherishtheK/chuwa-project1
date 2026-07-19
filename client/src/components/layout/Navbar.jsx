@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Layout, Badge } from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
@@ -7,6 +7,8 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/auth/authSlice";
+import { fetchCart, resetCart } from "../../features/cart/cartSlice";
+import { useEffect } from "react";
 
 const { Header } = Layout;
 
@@ -14,6 +16,12 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const total = useSelector(state => state.cart.total);
+  const totalQuantity = useSelector(state => state.cart.totalQuantity);
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, []);
 
   return (
     <Header
@@ -67,6 +75,7 @@ function Navbar() {
             onClick={() => {
               localStorage.removeItem("token");
               dispatch(logoutUser());
+              dispatch(resetCart());
               navigate("/");
             }}
           >
@@ -80,10 +89,14 @@ function Navbar() {
             <UserOutlined /> Sign In
           </span>
         )}
+        <Badge count={totalQuantity}>
+          <ShoppingCartOutlined className="!text-white text-2xl"/>
+        </Badge>
 
         <span style={{ color: "white" }}>
-          <ShoppingCartOutlined /> $0.00
+             ${total}
         </span>
+
       </div>
     </Header>
   );

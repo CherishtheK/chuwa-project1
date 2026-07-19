@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Button } from "antd";
-import { getProductById } from "../api/products";
+import { createProduct, getProductById } from "../api/products";
+import { fetchCart, addOrUpdateCart, removeCart } from "../features/cart/cartSlice";
 
 
 function ProductDetailsPage() {
-  const user = useSelector(state => state.auth.user);
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const curItems = useSelector(state => state.cart.items);
+  const curProduct = curItems.find(item => item.productId.toString() === id);
+  const quantity = curProduct?.quantity || 0;
+  const user = useSelector(state => state.auth.user);
   const [product, setProduct] = useState(null);
   const isVendor = user?.role === "vendor";
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [])
 
   useEffect(() => {
     getProductById(id)
@@ -18,6 +27,13 @@ function ProductDetailsPage() {
   }, [id])
 
   if(!product) return <div>loading...</div>
+
+
+
+  const handleAdd = async (delta) => {
+    await dispatch(addOrUpdateCart({productId: id, delta}));
+    dispatch(fetchCart());
+  }
 
   return (
       <div className="max-w-6xl mx-auto py-4">
@@ -33,7 +49,18 @@ function ProductDetailsPage() {
             )}
             <p className="mt-4 text-gray-600">{product.description}</p>
             <div className="flex gap-3 mt-4">
-                <Button type="primary" disabled={product.stock === 0}>Add to Cart</Button>
+            {quantity === 0?(<Button 
+                    type="primary" 
+                    disabled={product.stock === 0}
+                    onClick={() => handleAdd(1)}>
+                    Add to Cart
+                </Button>) : (
+                  <div className="flex items-center gap-2">
+                    <Button onClick={() => handleAdd(-1)}> - </Button>
+                    <span className="w-6 text-center">{quantity}</span>
+                    <Button onClick={() => handleAdd(1)}> + </Button>
+                  </div>
+                )}
                 {isVendor && <Button>Edit</Button>}
             </div>
           </div>
