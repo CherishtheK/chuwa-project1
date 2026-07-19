@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "antd";
 import { createProduct, getProductById } from "../api/products";
@@ -12,7 +12,7 @@ function ProductDetailsPage() {
   const curItems = useSelector(state => state.cart.items);
   const curProduct = curItems.find(item => item.productId.toString() === id);
   const quantity = curProduct?.quantity || 0;
-  const user = useSelector(state => state.auth.user);
+  const user = useSelector(state => state.auth.currentUser);
   const [product, setProduct] = useState(null);
   const isVendor = user?.role === "vendor";
 

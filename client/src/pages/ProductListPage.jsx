@@ -17,7 +17,7 @@ function ProductListPage() {
   const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('desc');
   const [totalPages, setTotalPages] = useState(1);
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.currentUser);
   const isVendor = user?.role === 'vendor';  
   const dispatch = useDispatch();
 
