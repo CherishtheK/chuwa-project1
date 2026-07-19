@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getProductById } from "../api/products.js";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getProductById, editProduct, createProduct } from "../api/products.js";
 import { Form, message, Button, Input, InputNumber, Select, Card } from "antd";
 
 function ProductEditPage() {
@@ -8,6 +8,8 @@ function ProductEditPage() {
   const isEdit = Boolean(id);
   const [form] = Form.useForm();
   const imageUrl = Form.useWatch("imageUrl", form);
+  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -21,11 +23,30 @@ function ProductEditPage() {
     };
     fetchProduct();
   }, [id]);
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinish = async (values) => {
+    setSubmitting(true);
+    try {
+      if (isEdit) {
+        await editProduct(id, values);
+        message.success("Successfully updated the product!");
+        navigate(`/products/${id}`);
+      } else {
+        await createProduct(values);
+        message.success("Successfully created the product!");
+        navigate("/");
+      }
+    } catch (error) {
+      message.error(
+        error.response?.data?.message ||
+          (isEdit ? "Failed to update product" : "Failed to create product"),
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
+
   return (
-    <Card style={{ width: 600, margin: "40px auto" }}>
+    <Card style={{ maxWidth: 600, margin: "40px auto" }}>
       <h2>{isEdit ? "Edit Product" : "Create Product"}</h2>
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
@@ -88,13 +109,16 @@ function ProductEditPage() {
             src={imageUrl}
             alt="preview"
             style={{ width: 200, height: 200, objectFit: "cover" }}
+            onLoad={(e) => {
+              e.target.style.display = "block";
+            }}
             onError={(e) => {
               e.target.style.display = "none";
             }}
           />
         )}
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={submitting}>
             {isEdit ? "Edit Product" : "Add Product"}
           </Button>
         </Form.Item>
