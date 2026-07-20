@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "antd";
 import { createProduct, getProductById } from "../api/products";
@@ -9,10 +9,12 @@ import { fetchCart, addOrUpdateCart, removeCart } from "../features/cart/cartSli
 function ProductDetailsPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const curItems = useSelector(state => state.cart.items);
   const curProduct = curItems.find(item => item.productId.toString() === id);
   const quantity = curProduct?.quantity || 0;
   const user = useSelector(state => state.auth.currentUser);
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const [product, setProduct] = useState(null);
   const isVendor = user?.role === "vendor";
 
@@ -31,6 +33,9 @@ function ProductDetailsPage() {
 
 
   const handleAdd = async (delta) => {
+    if(!isAuthenticated){
+      navigate('/signin');
+    }
     await dispatch(addOrUpdateCart({productId: id, delta}));
     dispatch(fetchCart());
   }
@@ -62,7 +67,7 @@ function ProductDetailsPage() {
                     <Button onClick={() => handleAdd(1)}> + </Button>
                   </div>
                 )}
-                {isVendor && <Button>Edit</Button>}
+                {isVendor && <Button onClick={() => navigate(`/products/${id}/edit`)}>Edit</Button>}
             </div>
           </div>
         </div>

@@ -98,7 +98,7 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(restoreSession.fulfilled, (state, action) => {
-        state.currentUser = action.payload; // payload is the user itself
+        state.currentUser = action.payload;
         state.isAuthenticated = true;
         state.loading = false;
       })

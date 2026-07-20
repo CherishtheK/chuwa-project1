@@ -4,6 +4,12 @@ const { requireJwt, requireVendorRole } = require("../middlewares/auth");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart")
 const TAX_RATE = 0.1;
+const ValidCoupon = {
+    'SAVE20CHUWA':20,
+    'SAVE30CHUWA':30,
+    'SAVE50CHUWA':50,
+    'SAVE100CHUWA':100
+}
 
 //add product & edit quantity
 router.post('/items', requireJwt, async(req, res) => {
@@ -26,8 +32,8 @@ router.post('/items', requireJwt, async(req, res) => {
         if(index === -1){
             if(delta > 0){
                 const initialQty = Math.min(delta, curProduct.stock);
+                curCart.items.push({productId: productId, quantity: initialQty});
             }
-            curCart.items.push({productId: productId, quantity: initialQty});
         }
         else{
             let newQty = curCart.items[index].quantity + delta;
@@ -56,6 +62,7 @@ router.delete('/items/:id', requireJwt, async(req, res) => {
     try{
         const productId = req.params.id;
         const curCart = await Cart.findOne({userId: req.user.id});
+        const coupon = curCart
         const index = curCart.items.findIndex(item => item.productId.toString() === productId);
         if(index === -1){
             res.status(404).json({message: "Product not found in cart"});
@@ -131,8 +138,8 @@ router.get('/', requireJwt, async(req, res) => {
         const totalQuantity = detailedItems.reduce((acc, cur) => {
             return acc + cur.quantity;
         }, 0)
-        const tax = subtotal * TAX_RATE;
-        const total = subtotal + tax;
+        const tax = Math.round(discountedSub * TAX_RATE * 100) / 100;
+        const total = discountedSub + tax;
 
         res.status(200).json({
             items: detailedItems,
@@ -140,6 +147,7 @@ router.get('/', requireJwt, async(req, res) => {
             subtotal,
             tax,
             total,
+            discount,
             adjusted: cartChange
         })
     }
