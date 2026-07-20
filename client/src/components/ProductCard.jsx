@@ -30,7 +30,7 @@ function ProductCard({product, isVendor}){
                 <img src={product.imageUrl} alt={product.name} className='h-48 object-cover'/>
                 </Link>}
             className='w-full'>
-            <Link to={`/products/${product._id}`} className='text-black no-underline'>
+            <Link to={`/products/${product._id}`} className='!text-black no-underline'>
                 <h3 className='text-base font-medium'>{product.name}</h3>
                 <p className='text-lg font-bold mt-1'>${product.price}</p>
             </Link>
@@ -42,6 +42,7 @@ function ProductCard({product, isVendor}){
             <div className='flex gap-2 mt-3'>
                 {quantity === 0? (<Button 
                     type='primary' 
+                    style={{backgroundColor: "#5048e5", color: "white"}}
                     disabled={product.stock === 0}
                     onClick={() => handleAdd(1)}>
                         Add
