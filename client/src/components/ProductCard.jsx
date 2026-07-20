@@ -53,7 +53,7 @@ function ProductCard({product, isVendor}){
                         <Button onClick={() => handleAdd(1)}> + </Button>
                     </div>
                 )}
-                {isVendor && <Button>Edit</Button>}
+                {isVendor && <Button onClick={() => navigate(`/products/${product._id}/edit`)}>Edit</Button>}
             </div>
         </Card>
         
