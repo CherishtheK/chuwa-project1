@@ -9,6 +9,12 @@ const TAX_RATE = 0.1;
 router.post('/items', requireJwt, async(req, res) => {
     try{
         const {productId, delta} = req.body;
+        const curProduct = await Product.findById(productId)
+
+        if(!curProduct){
+            return res.status(404).json({message: "Product not found"})
+        }
+
         const curCart = await Cart.findOneAndUpdate(
             { userId: req.user.id},
             {},
@@ -18,12 +24,22 @@ router.post('/items', requireJwt, async(req, res) => {
         //update quantity
         const index = curCart.items.findIndex(item => item.productId.toString() === productId);
         if(index === -1){
-            curCart.items.push({productId: productId, quantity: delta});
+            if(delta > 0){
+                const initialQty = Math.min(delta, curProduct.stock);
+            }
+            curCart.items.push({productId: productId, quantity: initialQty});
         }
         else{
-            curCart.items[index].quantity += delta;
-            if(curCart.items[index].quantity <= 0){
+            let newQty = curCart.items[index].quantity + delta;
+
+            if(newQty > curProduct.stock){
+                newQty = curProduct.stock
+            }
+            if(newQty <= 0){
                 curCart.items.splice(index, 1);
+            }
+            else{
+                curCart.items[index].quantity = newQty;
             }
         }
 
@@ -68,6 +84,29 @@ router.get('/', requireJwt, async(req, res) => {
                 total: 0
             })
         }
+        let cartChange = false;
+        const iterItems = [];
+
+        for(let item of curCart.items){
+            const curItem = await Product.findById(item.productId);
+
+            if(!curItem || curItem.stock === 0){
+                cartChange = true;
+                continue;
+            }
+
+            if(item.quantity > curItem.stock){
+                item.quantity = curItem.stock;
+                cartChange = true;
+            }
+            iterItems.push(item);
+        }
+
+        if(cartChange){
+            curCart.items = iterItems;
+            await curCart.save();
+        }
+
         const detailedItems = await Promise.all(
             curCart.items.map(async(item) => {
                 const curProduct = await Product.findById(item.productId);
@@ -83,22 +122,23 @@ router.get('/', requireJwt, async(req, res) => {
                 }
             })
         )
-        const validItems = detailedItems.filter(item => item !== null);
-        const subtotal = validItems.reduce((acc, cur) => {
+        
+        const subtotal = detailedItems.reduce((acc, cur) => {
             return acc + cur.subtotal;
         }, 0)
-        const totalQuantity = validItems.reduce((acc, cur) => {
+        const totalQuantity = detailedItems.reduce((acc, cur) => {
             return acc + cur.quantity;
         }, 0)
         const tax = subtotal * TAX_RATE;
         const total = subtotal + tax;
 
         res.status(200).json({
-            items: validItems,
+            items: detailedItems,
             totalQuantity,
             subtotal,
             tax,
-            total
+            total,
+            adjusted: cartChange
         })
     }
     catch(err){
