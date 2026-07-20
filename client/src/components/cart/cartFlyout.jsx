@@ -28,9 +28,9 @@ function CartFlyout({open, onClose}) {
             dispatch(fetchCart());
        }
        catch(err){
-        message.warning('Invalid coupon code');
+            dispatch(fetchCart());
+            message.warning('Invalid coupon code');
        } 
-       
     }
 
     return (
