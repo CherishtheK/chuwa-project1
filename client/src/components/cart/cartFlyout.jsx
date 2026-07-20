@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCart, addOrUpdateCart, removeCart, addCouponCode } from "../../features/cart/cartSlice";
 import { CloseOutlined } from "@ant-design/icons";
 import { useState } from 'react';
-
+import { clearCoupon } from "../../features/cart/cartSlice";
 
 function CartFlyout({open, onClose}) {
     const { items, subtotal, tax, total, totalQuantity, discount } = useSelector(state => state.cart)
@@ -28,9 +28,14 @@ function CartFlyout({open, onClose}) {
             dispatch(fetchCart());
        }
        catch(err){
-        message.warning('Invalid coupon code');
+            dispatch(fetchCart());
+            message.warning('Invalid coupon code');
        } 
-       
+    }
+
+    const handleClose = () => {
+        dispatch(clearCoupon());
+        onClose();
     }
 
     return (
@@ -39,7 +44,7 @@ function CartFlyout({open, onClose}) {
             open = {open} 
             onClose ={onClose}
             closable = {false}
-            extra = {<CloseOutlined className="text-white cursor-pointer" onClick={onClose}/>}
+            extra = {<CloseOutlined className="text-white cursor-pointer" onClick={handleClose}/>}
             styles={{header: {backgroundColor: "#5048e5", color: "white"}}}
             >
             

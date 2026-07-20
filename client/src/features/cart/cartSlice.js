@@ -9,6 +9,7 @@ const initialState = {
   total: 0,
   loading: false,
   discount: 0,
+  couponCode: null,
   adjusted:false
 };
 
@@ -53,6 +54,10 @@ const cartSlice = createSlice({
       state.subtotal = 0;
       state.tax = 0;
       state.total = 0
+    },
+    clearCoupon: (state) => {
+      state.couponCode = null;
+      state.discount = 0
     }
   },
   extraReducers: (builder) => {
@@ -78,4 +83,4 @@ const cartSlice = createSlice({
 
 export { fetchCart, addOrUpdateCart, removeCart, addCouponCode };
 export default cartSlice.reducer;
-export const { resetCart } = cartSlice.actions;
+export const { resetCart, clearCoupon } = cartSlice.actions;
