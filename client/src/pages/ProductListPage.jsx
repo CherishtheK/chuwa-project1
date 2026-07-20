@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch} from "react-redux";
 import { getProducts } from '../api/products';
-import { Select, Button, Pagination  } from 'antd';
+import { Select, Button, Pagination} from 'antd';
 import ProductCard from '../components/ProductCard';
-import { fetchCart } from "../features/cart/cartSlice";
 import { Link, useNavigate} from "react-router-dom";
 
 
@@ -24,6 +23,7 @@ function ProductListPage() {
   const isVendor = user?.role === 'vendor';  
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     getProducts({ page, sortBy, sortOrder})
@@ -33,11 +33,10 @@ function ProductListPage() {
         setTotal(res.data.total);
       })
       .catch(err => console.log(err))
-  }, [page, sortBy, sortOrder])
+  }, [page, sortBy, sortOrder, total])
 
-  useEffect(() => {
-    dispatch(fetchCart());
-  }, [])
+
+
   const handleSortChange = (value) => {
     const [newSortBy, newSortOrder] = value.split('_');
     setSortBy(newSortBy);
@@ -58,7 +57,7 @@ function ProductListPage() {
                         onClick={() => navigate("products/create")}
                         >Add product</Button>}
         </div>
-              </div>
+    </div>
       <div>
         <div className="grid grid-cols-5 gap-4">
           {products.map(p => <ProductCard key ={p._id} product={p} isVendor={isVendor} />)}
@@ -71,11 +70,6 @@ function ProductListPage() {
             pageSize={10}
             onChange={(newPage) => setPage(newPage)} />
         </div>
-
-{/* 
-        <button disabled={page <= 1} onClick={() => setPage(prev => prev - 1)}>Back</button>
-        <span>{page}/{totalPages}</span>
-        <button disabled={page >= totalPages} onClick={() => setPage(prev => prev + 1)}>Next</button> */}
       </div>
     </div>
     );
