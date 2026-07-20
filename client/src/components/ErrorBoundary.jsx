@@ -22,6 +22,9 @@ class ErrorBoundary extends Component {
           status="500"
           title={<h1>Oops, something went wrong!</h1>}
           subTitle="An unexpected error occurred. Please go back and try again."
+          onGoHome={() => {
+            window.location.href = "/";
+          }}
         />
       );
     }
