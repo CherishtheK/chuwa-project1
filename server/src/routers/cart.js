@@ -26,8 +26,8 @@ router.post('/items', requireJwt, async(req, res) => {
         if(index === -1){
             if(delta > 0){
                 const initialQty = Math.min(delta, curProduct.stock);
+                curCart.items.push({productId: productId, quantity: initialQty});
             }
-            curCart.items.push({productId: productId, quantity: initialQty});
         }
         else{
             let newQty = curCart.items[index].quantity + delta;
