@@ -31,7 +31,7 @@ function AppLayout() {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Header />
-      <Content style={{ flex: 1 }}>
+      <Content style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         <Outlet />
       </Content>
       <Footer />

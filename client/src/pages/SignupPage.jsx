@@ -46,17 +46,21 @@ function SignupPage() {
   ];
 
   return (
-    <Card style={{ width: 400, margin: "40px auto" }}>
-      <h2 style={{ textAlign: "center" }}>Sign up an account</h2>
-      <AuthForm
-        fields={fields}
-        onFinish={onFinish}
-        submitButtonText="Create account"
-      />
-      <p style={{ textAlign: "center" }}>
-        Already have an account? <Link to="/signin">Sign in</Link>
-      </p>
-    </Card>
+    <div className="flex-1 flex justify-center items-center">
+      <Card style={{ width: "100%", maxWidth: "500px", padding: "20px" }}>
+        <h1 style={{ textAlign: "center", marginBottom: "40px" }}>
+          Sign up an account
+        </h1>
+        <AuthForm
+          fields={fields}
+          onFinish={onFinish}
+          submitButtonText="Create account"
+        />
+        <p style={{ textAlign: "center" }}>
+          Already have an account? <Link to="/signin">Sign in</Link>
+        </p>
+      </Card>
+    </div>
   );
 }
 

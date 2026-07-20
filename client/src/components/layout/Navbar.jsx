@@ -18,8 +18,8 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const total = useSelector(state => state.cart.total);
-  const totalQuantity = useSelector(state => state.cart.totalQuantity);
+  const total = useSelector((state) => state.cart.total);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const [openCart, setOpenCart] = useState(false);
 
   useEffect(() => {
@@ -27,54 +27,29 @@ function Navbar() {
   }, []);
 
   return (
-    <Header
-      className="bg-ink!"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "20px",
-        fontSize: 16,
-      }}
-    >
-      <Link to="/" style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>
-        Management <span style={{ fontSize: 16 }}>Chuwa</span>
+    <Header className="bg-ink! h-auto! flex flex-wrap items-center justify-between p-2 md:p-3 ">
+      <Link
+        to="/"
+        className="text-xl md:text-2xl order-1 md:order-none text-white!"
+      >
+        <span className="hidden md:inline">Management </span>
+        <span className="md:hidden">M</span>
+        <span className="text-xs!">Chuwa</span>
       </Link>
 
-      <div
-        style={{
-          position: "relative",
-          flex: 1,
-          maxWidth: 400,
-          margin: "0 24px",
-        }}
-      >
+      <div className="order-3 md:order-none w-full md:w-auto relative md:flex-1 md:max-w-[500px]">
         <input
           type="text"
+          className="w-full rounded-md bg-surface pl-3 pr-10 h-8 "
           placeholder="Search your products"
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: 6,
-            padding: "6px 36px 6px 12px",
-            outline: "none",
-            background: "white",
-          }}
         />
-        <SearchOutlined
-          style={{
-            position: "absolute",
-            right: 10,
-            top: "50%",
-            transform: "translateY(-50%)",
-          }}
-        />
+        <SearchOutlined className="absolute right-3 top-1/2 -translate-y-1/2 text-muted!" />
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+      <div className="order-2 md:order-none flex items-center gap-4 md:gap-6">
         {isAuthenticated ? (
           <span
-            style={{ color: "white", cursor: "pointer" }}
+            className="cursor-pointer text-white! text-xs"
             onClick={() => {
               localStorage.removeItem("token");
               dispatch(logoutUser());
@@ -86,7 +61,7 @@ function Navbar() {
           </span>
         ) : (
           <span
-            style={{ color: "white", cursor: "pointer" }}
+            className="cursor-pointer text-white! text-xs"
             onClick={() => navigate("/signin")}
           >
             <UserOutlined /> Sign In
@@ -97,10 +72,7 @@ function Navbar() {
         </Badge>
           <CartFlyout open={openCart} onClose={() => setOpenCart(false)} />
 
-        <span style={{ color: "white" }}>
-             ${total}
-        </span>
-
+        <span style={{ color: "white" }}>${total}</span>
       </div>
     </Header>
   );
