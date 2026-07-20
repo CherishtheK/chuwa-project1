@@ -3,14 +3,14 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
   SearchOutlined,
+  StarFilled,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/auth/authSlice";
 import { fetchCart, resetCart } from "../../features/cart/cartSlice";
 import { useEffect, useState } from "react";
-import CartFlyout from '../cart/CartFlyout';
-
+import CartFlyout from "../cart/CartFlyout";
 
 const { Header } = Layout;
 
@@ -49,7 +49,7 @@ function Navbar() {
       <div className="order-2 md:order-none flex items-center gap-4 md:gap-6">
         {isAuthenticated ? (
           <span
-            className="cursor-pointer text-white! text-xs"
+            className="cursor-pointer text-white! text-xs "
             onClick={() => {
               localStorage.removeItem("token");
               dispatch(logoutUser());
@@ -57,20 +57,30 @@ function Navbar() {
               navigate("/");
             }}
           >
-            <UserOutlined /> Sign Out
+            <span className="relative inline-block">
+              <UserOutlined />
+              <StarFilled className="absolute bottom-0 -right-1 text-[12px]  text-yellow-400!" />
+            </span>{" "}
+            <span className="hidden md:inline"> Sign Out </span>
+            <span className="md:hidden"></span>
           </span>
         ) : (
           <span
             className="cursor-pointer text-white! text-xs"
             onClick={() => navigate("/signin")}
           >
-            <UserOutlined /> Sign In
+            <UserOutlined />
+            <span className="hidden md:inline"> Sign In </span>
+            <span className="md:hidden"></span>
           </span>
         )}
         <Badge count={totalQuantity}>
-          <ShoppingCartOutlined className="!text-white text-2xl" onClick={() => setOpenCart(true)} />
+          <ShoppingCartOutlined
+            className="!text-white text-2xl"
+            onClick={() => setOpenCart(true)}
+          />
         </Badge>
-          <CartFlyout open={openCart} onClose={() => setOpenCart(false)} />
+        <CartFlyout open={openCart} onClose={() => setOpenCart(false)} />
 
         <span style={{ color: "white" }}>${total}</span>
       </div>
