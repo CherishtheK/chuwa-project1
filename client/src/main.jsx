@@ -5,6 +5,8 @@ import store from "./app/index.js";
 import "./index.css";
 import App from "./App.jsx";
 import { ConfigProvider } from "antd";
+import { BrowserRouter } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -24,7 +26,11 @@ createRoot(document.getElementById("root")).render(
       }}
     >
       <Provider store={store}>
-        <App />
+        <BrowserRouter>
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
+        </BrowserRouter>
       </Provider>
     </ConfigProvider>
   </StrictMode>,

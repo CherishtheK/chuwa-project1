@@ -2,12 +2,17 @@ import { Result, Button } from "antd";
 
 import { useNavigate } from "react-router-dom";
 
-function ErrorPage() {
+function ErrorPage({
+  status = "404",
+  title = <h1>Oops, something went wrong!</h1>,
+  subTitle = "The page you're looking for doesn't exist.",
+}) {
   const navigate = useNavigate();
   return (
     <Result
-      status="404"
-      subTitle={<h1>Oops, something went wrong!</h1>}
+      status={status}
+      title={title}
+      subTitle={subTitle}
       extra={
         <Button type="primary" onClick={() => navigate("/")}>
           Back Home

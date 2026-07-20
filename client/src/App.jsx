@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import SignupPage from "./pages/SignupPage";
 import SigninPage from "./pages/SigninPage";
 import AppLayout from "./components/layout/AppLayout";
@@ -23,22 +23,20 @@ function App() {
     }
   }, [dispatch]);
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route index element={<ProductListPage />} />
-          <Route path="signup" element={<SignupPage />} />
-          <Route path="signin" element={<SigninPage />} />
-          <Route path="forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="products/:id" element={<ProductDetailsPage />} />
-          <Route element={<VendorRoute />}>
-            <Route path="products/create" element={<ProductEditPage />} />
-            <Route path="products/:id/edit" element={<ProductEditPage />} />
-          </Route>
-          <Route path="*" element={<ErrorPage />} />
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<ProductListPage />} />
+        <Route path="signup" element={<SignupPage />} />
+        <Route path="signin" element={<SigninPage />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="products/:id" element={<ProductDetailsPage />} />
+        <Route element={<VendorRoute />}>
+          <Route path="products/create" element={<ProductEditPage />} />
+          <Route path="products/:id/edit" element={<ProductEditPage />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+        <Route path="*" element={<ErrorPage />} />
+      </Route>
+    </Routes>
   );
 }
 
