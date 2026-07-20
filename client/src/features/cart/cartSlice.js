@@ -7,7 +7,8 @@ const initialState = {
   subtotal: 0,
   tax: 0,
   total: 0,
-  loading: false
+  loading: false,
+  adjusted:false
 };
 
 const fetchCart = createAsyncThunk(
@@ -58,6 +59,7 @@ const cartSlice = createSlice({
         state.subtotal = action.payload.subtotal;
         state.tax = action.payload.tax;
         state.total = action.payload.total
+        state.adjusted = action.payload.adjusted
       })
       .addCase(fetchCart.rejected, (state) => {
         state.loading = false;

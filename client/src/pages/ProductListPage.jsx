@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../api/products";
-import { Select, Button, Pagination } from "antd";
-import ProductCard from "../components/ProductCard";
-import { fetchCart } from "../features/cart/cartSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch} from "react-redux";
+import { getProducts } from '../api/products';
+import { Select, Button, Pagination} from 'antd';
+import ProductCard from '../components/ProductCard';
+import { Link, useNavigate} from "react-router-dom";
+
 
 const sortOptions = [
   { value: "createdAt_desc", label: "Last added" },
@@ -23,6 +23,7 @@ function ProductListPage() {
   const isVendor = user?.role === "vendor";
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     getProducts({ page, sortBy, sortOrder })
@@ -31,12 +32,11 @@ function ProductListPage() {
         setTotalPages(res.data.totalPages);
         setTotal(res.data.total);
       })
-      .catch((err) => console.log(err));
-  }, [page, sortBy, sortOrder]);
+      .catch(err => console.log(err))
+  }, [page, sortBy, sortOrder, total])
 
-  useEffect(() => {
-    dispatch(fetchCart());
-  }, []);
+
+
   const handleSortChange = (value) => {
     const [newSortBy, newSortOrder] = value.split("_");
     setSortBy(newSortBy);
