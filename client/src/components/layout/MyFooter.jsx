@@ -7,32 +7,23 @@ const { Footer } = Layout;
 function MyFooter() {
   const currentYear = new Date().getFullYear();
   return (
-    <Footer
-      className="bg-ink!"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        color: "white",
-        padding: "20px",
-      }}
-    >
-      <p>©{currentYear} All Rights Reserved.</p>
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <Footer className="bg-ink! flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0 text-center  text-white!">
+      <div className="order-3 md:order-0">
+        ©{currentYear} All Rights Reserved.
+      </div>
+      <div className="order-1 md:order-0 flex items-center gap-4">
         <FaYoutube />
         <FaXTwitter />
         <FaFacebook />
       </div>
-      <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
-        <a href="#" style={{ color: "white" }}>
-          Contact us
-        </a>
-        <a href="#" style={{ color: "white" }}>
+      <nav className="order-2 md:order-0 flex items-center gap-4">
+        <span className="cursor-pointer">Contact us</span>
+        <span href="#" className="cursor-pointer">
           Privacy Policies
-        </a>
-        <a href="#" style={{ color: "white" }}>
+        </span>
+        <span href="#" className="cursor-pointer">
           Help
-        </a>
+        </span>
       </nav>
     </Footer>
   );
