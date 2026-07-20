@@ -107,11 +107,14 @@ function ProductEditPage() {
               name="price"
               label="Price"
               rules={[
-                { required: true, message: "Please input price" },
+                {
+                  required: true,
+                  message: "Please input a proper price number",
+                },
                 { type: "number", min: 0, message: "Price must be at least 0" },
               ]}
             >
-              <InputNumber style={{ width: "100%" }} />
+              <InputNumber min={0} style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               name="stock"
@@ -126,9 +129,13 @@ function ProductEditPage() {
                   min: 0,
                   message: "In stock quantity must be at least 0",
                 },
+                {
+                  type: "integer",
+                  message: "Quantity must be an integer number",
+                },
               ]}
             >
-              <InputNumber style={{ width: "100%" }} />
+              <InputNumber min={0} precision={0} style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               name="imageUrl"
