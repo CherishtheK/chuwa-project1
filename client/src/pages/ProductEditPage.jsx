@@ -114,7 +114,7 @@ function ProductEditPage() {
                 { type: "number", min: 0, message: "Price must be at least 0" },
               ]}
             >
-              <InputNumber min={0} style={{ width: "100%" }} />
+              <InputNumber style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               name="stock"
@@ -122,7 +122,7 @@ function ProductEditPage() {
               rules={[
                 {
                   required: true,
-                  message: "Please input current in stock quantity",
+                  message: "Please input a proper stock quantity",
                 },
                 {
                   type: "number",
@@ -135,7 +135,7 @@ function ProductEditPage() {
                 },
               ]}
             >
-              <InputNumber min={0} precision={0} style={{ width: "100%" }} />
+              <InputNumber precision={0} style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               name="imageUrl"
