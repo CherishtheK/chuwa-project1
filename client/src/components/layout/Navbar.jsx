@@ -8,7 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/auth/authSlice";
 import { fetchCart, resetCart } from "../../features/cart/cartSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import CartFlyout from '../cart/CartFlyout';
+
 
 const { Header } = Layout;
 
@@ -18,6 +20,7 @@ function Navbar() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const total = useSelector((state) => state.cart.total);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const [openCart, setOpenCart] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -65,8 +68,9 @@ function Navbar() {
           </span>
         )}
         <Badge count={totalQuantity}>
-          <ShoppingCartOutlined className="!text-white text-2xl" />
+          <ShoppingCartOutlined className="!text-white text-2xl" onClick={() => setOpenCart(true)} />
         </Badge>
+          <CartFlyout open={openCart} onClose={() => setOpenCart(false)} />
 
         <span style={{ color: "white" }}>${total}</span>
       </div>
