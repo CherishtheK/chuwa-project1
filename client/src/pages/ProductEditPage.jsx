@@ -1,7 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById, editProduct, createProduct } from "../api/products.js";
-import { Form, message, Button, Input, InputNumber, Select, Card } from "antd";
+import {
+  getProductById,
+  editProduct,
+  createProduct,
+  deleteProduct,
+} from "../api/products.js";
+import {
+  Form,
+  message,
+  Button,
+  Input,
+  InputNumber,
+  Select,
+  Card,
+  Popconfirm,
+} from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 
 function ProductEditPage() {
@@ -11,6 +25,7 @@ function ProductEditPage() {
   const imageUrl = Form.useWatch("imageUrl", form);
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const previewClass = "w-full h-50 object-cover mb-3";
 
   useEffect(() => {
@@ -25,6 +40,7 @@ function ProductEditPage() {
     };
     fetchProduct();
   }, [id]);
+
   const onFinish = async (values) => {
     setSubmitting(true);
     try {
@@ -46,7 +62,20 @@ function ProductEditPage() {
       setSubmitting(false);
     }
   };
-
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await deleteProduct(id);
+      message.success("You have successfully deleted the product!");
+      navigate("/");
+    } catch (error) {
+      message.error(
+        error.response?.data?.message || "Failed to delete the product",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
   return (
     <div className="flex-1 flex flex-col justify-center items-center px-2 py-2">
       <h1 className="mb-3 ">{isEdit ? "Edit Product" : "Create Product"}</h1>
@@ -113,7 +142,7 @@ function ProductEditPage() {
             <img
               src={imageUrl}
               alt="preview"
-              className={`${previewClass}`}
+              className={previewClass}
               onLoad={(e) => {
                 e.target.style.display = "block";
               }}
@@ -129,10 +158,26 @@ function ProductEditPage() {
               Image preview!
             </div>
           )}
-          <Form.Item className="text-center">
-            <Button type="primary" htmlType="submit" loading={submitting}>
-              {isEdit ? "Edit Product" : "Add Product"}
-            </Button>
+          <Form.Item>
+            <div className="flex justify-between">
+              <Button type="primary" htmlType="submit" loading={submitting}>
+                {isEdit ? "Edit Product" : "Add Product"}
+              </Button>
+              {isEdit && (
+                <Popconfirm
+                  title="Delete this product?"
+                  description="This can't be undone. The product will be removed from the store immediately."
+                  onConfirm={handleDelete}
+                  okText="Delete"
+                  cancelText="Cancel"
+                  okButtonProps={{ danger: true, loading: deleting }}
+                >
+                  <Button type="primary" danger>
+                    Delete Product
+                  </Button>
+                </Popconfirm>
+              )}
+            </div>
           </Form.Item>
         </Form>
       </Card>
