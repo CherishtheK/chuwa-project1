@@ -1,4 +1,4 @@
-import { Layout, Badge } from "antd";
+import { Layout, Badge, message } from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
@@ -17,7 +17,7 @@ const { Header } = Layout;
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const total = useSelector((state) => state.cart.total);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const [openCart, setOpenCart] = useState(false);
@@ -49,24 +49,27 @@ function Navbar() {
       <div className="order-2 md:order-none flex items-center gap-4 md:gap-6">
         {isAuthenticated ? (
           <span
-            className="cursor-pointer text-white! text-xs "
+            className="cursor-pointer text-white!  "
             onClick={() => {
               localStorage.removeItem("token");
               dispatch(logoutUser());
               dispatch(resetCart());
+              message.success("Signed out successfully");
               navigate("/");
             }}
           >
-            <span className="relative inline-block">
-              <UserOutlined />
-              <StarFilled className="absolute bottom-0 -right-1 text-[12px]  text-yellow-400!" />
-            </span>{" "}
-            <span className="hidden md:inline"> Sign Out </span>
+            <Badge
+              count={<StarFilled className="text-yellow-400! text-[12px]" />}
+              offset={[-1, 16]}
+            >
+              <UserOutlined className="text-white! text-sm" />
+            </Badge>{" "}
+            <span className="hidden md:inline text-sm"> Sign Out </span>
             <span className="md:hidden"></span>
           </span>
         ) : (
           <span
-            className="cursor-pointer text-white! text-xs"
+            className="cursor-pointer text-white! text-sm"
             onClick={() => navigate("/signin")}
           >
             <UserOutlined />

@@ -48,9 +48,9 @@ function ProductEditPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center">
+    <div className="flex-1 flex flex-col justify-center items-center px-2 py-2">
       <h1 className="mb-3 ">{isEdit ? "Edit Product" : "Create Product"}</h1>
-      <Card style={{ width: "100%", maxWidth: 660 }}>
+      <Card className="w-full md:max-w-[660px]">
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
             name="name"
@@ -129,7 +129,7 @@ function ProductEditPage() {
               Image preview!
             </div>
           )}
-          <Form.Item>
+          <Form.Item className="text-center">
             <Button type="primary" htmlType="submit" loading={submitting}>
               {isEdit ? "Edit Product" : "Add Product"}
             </Button>
