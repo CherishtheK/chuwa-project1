@@ -4,6 +4,12 @@ const { requireJwt, requireVendorRole } = require("../middlewares/auth");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart")
 const TAX_RATE = 0.1;
+const ValidCoupon = {
+    'SAVE20CHUWA':20,
+    'SAVE30CHUWA':30,
+    'SAVE50CHUWA':50,
+    'SAVE100CHUWA':100
+}
 
 //add product & edit quantity
 router.post('/items', requireJwt, async(req, res) => {
@@ -56,6 +62,7 @@ router.delete('/items/:id', requireJwt, async(req, res) => {
     try{
         const productId = req.params.id;
         const curCart = await Cart.findOne({userId: req.user.id});
+        const coupon = curCart
         const index = curCart.items.findIndex(item => item.productId.toString() === productId);
         if(index === -1){
             res.status(404).json({message: "Product not found in cart"});
@@ -122,15 +129,16 @@ router.get('/', requireJwt, async(req, res) => {
                 }
             })
         )
-        
+        const discount = curCart.couponCode && ValidCoupon[curCart.couponCode]? ValidCoupon[curCart.couponCode] : 0;
         const subtotal = detailedItems.reduce((acc, cur) => {
             return acc + cur.subtotal;
         }, 0)
+        const discountedSub = subtotal - discount;
         const totalQuantity = detailedItems.reduce((acc, cur) => {
             return acc + cur.quantity;
         }, 0)
-        const tax = subtotal * TAX_RATE;
-        const total = subtotal + tax;
+        const tax = Math.round(discountedSub * TAX_RATE * 100) / 100;
+        const total = discountedSub + tax;
 
         res.status(200).json({
             items: detailedItems,
@@ -138,6 +146,7 @@ router.get('/', requireJwt, async(req, res) => {
             subtotal,
             tax,
             total,
+            discount,
             adjusted: cartChange
         })
     }
@@ -147,7 +156,21 @@ router.get('/', requireJwt, async(req, res) => {
 })
 
 //coupon code
-// router.put("/", requireJwt)
+router.put("/coupon", requireJwt, async(req, res) => {
+    const { coupon } = req.body;
+    
+    if(!ValidCoupon[coupon]){
+        return res.status(404).json({message: "invalid coupon code"})
+    }
+
+    const curCart = await Cart.findOneAndUpdate(
+        {userId: req.user.id},
+        {couponCode: coupon},
+        {upsert: true, returnDocument:'after'}
+    );
+    res.status(200).json(curCart);
+
+})
 
 
 module.exports = router;

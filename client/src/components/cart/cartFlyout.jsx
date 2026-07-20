@@ -1,11 +1,13 @@
-import { Drawer, Button } from "antd";
+import { Drawer, Button, message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchCart, addOrUpdateCart, removeCart } from "../../features/cart/cartSlice";
+import { fetchCart, addOrUpdateCart, removeCart, addCouponCode } from "../../features/cart/cartSlice";
 import { CloseOutlined } from "@ant-design/icons";
+import { useState } from 'react';
 
 
 function CartFlyout({open, onClose}) {
-    const { items, subtotal, tax, total, totalQuantity } = useSelector(state => state.cart)
+    const { items, subtotal, tax, total, totalQuantity, discount } = useSelector(state => state.cart)
+    const [coupon, setCoupon] = useState('');
     const dispatch = useDispatch()
 
     const handleAdd = async(productId, delta) => {
@@ -17,6 +19,18 @@ function CartFlyout({open, onClose}) {
     const handleRemove = async(productId) => {
         await dispatch(removeCart(productId))
         dispatch(fetchCart())
+    }
+
+    const handleDiscount = async(e) => {
+       e?.preventDefault();
+       try{
+            await dispatch(addCouponCode(coupon)).unwrap();
+            dispatch(fetchCart());
+       }
+       catch(err){
+        message.warning('Invalid coupon code');
+       } 
+       
     }
 
     return (
@@ -53,9 +67,11 @@ function CartFlyout({open, onClose}) {
             <div className="mt-4">
                 <p className="font-md mb-2">Apply Discount Code</p>
                 <div className="flex gap-2">
-                <input type="text" placeholder="20 DOLLAR OFF"
+                <input value={coupon}  onChange={e => setCoupon(e.target.value)} type="text" placeholder="Enter your coupon code"
                         className="flex-1 border rounded px-3 py-2" />
-                <Button type="primary" style={{backgroundColor: "#5048e5", color: "white"}}>Apply</Button>
+                <Button type="primary" 
+                        style={{backgroundColor: "#5048e5", color: "white"}}
+                        onClick={handleDiscount}>Apply</Button>
             </div>
             </div>
 
@@ -64,7 +80,7 @@ function CartFlyout({open, onClose}) {
             <div className="border-t pt-4 mt-4 space-y-2" >
                 <div className="flex justify-between"><span>Sutotal</span><span>${subtotal}</span></div>
                 <div className="flex justify-between"><span>Tax</span><span>${tax}</span></div>
-                <div className="flex justify-between"><span>Discount</span><span>-$0.00</span></div>
+                <div className="flex justify-between"><span>Discount</span><span>-${discount}</span></div>
                 <div className="flex justify-between"><span>Estimated total</span><span>${total}</span></div>
             </div>
             <Button type="primary" block className="mt-4" style={{backgroundColor: "#5048e5", color: "white"}}>Continue to checkout</Button>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getCart, addOrUpdateCartItem, removeCartItem } from "../../api/cart";
+import { getCart, addOrUpdateCartItem, removeCartItem, addCoupon } from "../../api/cart";
 
 const initialState = {
   items: [],
@@ -8,6 +8,7 @@ const initialState = {
   tax: 0,
   total: 0,
   loading: false,
+  discount: 0,
   adjusted:false
 };
 
@@ -31,10 +32,17 @@ const removeCart = createAsyncThunk(
   'cart/delete', 
   async (productId) => {
     const response = await removeCartItem(productId);
-    return response.data
+    return response.data;
   }
 )
 
+const addCouponCode = createAsyncThunk(
+  'cart/addCoupon',
+  async(coupon) => {
+    const response = await addCoupon(coupon);
+    return response.data;
+  }
+)
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -59,6 +67,7 @@ const cartSlice = createSlice({
         state.subtotal = action.payload.subtotal;
         state.tax = action.payload.tax;
         state.total = action.payload.total
+        state.discount = action.payload.discount
         state.adjusted = action.payload.adjusted
       })
       .addCase(fetchCart.rejected, (state) => {
@@ -67,6 +76,6 @@ const cartSlice = createSlice({
   }
 });
 
-export { fetchCart, addOrUpdateCart, removeCart };
+export { fetchCart, addOrUpdateCart, removeCart, addCouponCode };
 export default cartSlice.reducer;
 export const { resetCart } = cartSlice.actions;
