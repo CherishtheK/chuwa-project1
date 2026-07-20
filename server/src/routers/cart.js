@@ -122,10 +122,12 @@ router.get('/', requireJwt, async(req, res) => {
                 }
             })
         )
-        
+        const rawDiscount = curCart.couponCode && ValidCoupon[curCart.couponCode] ? ValidCoupon[curCart.couponCode] : 0;
         const subtotal = detailedItems.reduce((acc, cur) => {
             return acc + cur.subtotal;
         }, 0)
+        const discount = subtotal >= rawDiscount ? rawDiscount : 0;
+        const discountedSub = subtotal - discount;
         const totalQuantity = detailedItems.reduce((acc, cur) => {
             return acc + cur.quantity;
         }, 0)
@@ -147,7 +149,28 @@ router.get('/', requireJwt, async(req, res) => {
 })
 
 //coupon code
-// router.put("/", requireJwt)
+router.put("/coupon", requireJwt, async(req, res) => {
+    try {
+        const { coupon } = req.body;
+        if(!ValidCoupon[coupon]){
+            await Cart.findOneAndUpdate(
+                {userId: req.user.id},
+                {couponCode: null},
+                {upsert: true}
+            );
+            return res.status(404).json({message: "invalid coupon code"})
+        }
+        const curCart = await Cart.findOneAndUpdate(
+            {userId: req.user.id},
+            {couponCode: coupon},
+            {upsert: true, returnDocument:'after'}
+        );
+        res.status(200).json(curCart);
+    }
+    catch(err){
+        res.status(500).json({message: err.message});
+    }
+})
 
 
 module.exports = router;
